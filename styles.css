@@ -1,0 +1,17 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    text-align: center;
+}
+input, button {
+    display: block;
+    margin: 10px auto;
+    padding: 5px;
+}
+button {
+    cursor: pointer;
+}
+.course-list, .chapter-content {
+    margin: 20px;
+    text-align: left;
+}
