@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Course</title>
     <link rel="stylesheet" href="../styles.css">
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="../script.js" defer></script>
     <script>
-        auth.onAuthStateChanged((user) => {
+        auth.onAuthStateChanged(user => {
             if (!user) {
                 window.location.href = '../index.html';
             } else {
@@ -22,7 +22,6 @@
             const urlParams = new URLSearchParams(window.location.search);
             const courseId = urlParams.get('courseId');
             let enrollmentId;
-
             db.collection('enrollments')
                 .where('userEmail', '==', user.email)
                 .where('courseId', '==', courseId)
@@ -31,17 +30,14 @@
                     const enrollment = snapshot.docs[0];
                     enrollmentId = enrollment.id;
                     const currentChapterId = enrollment.data().currentChapterId;
-
                     db.collection('courses').doc(courseId).get().then(doc => {
                         const course = doc.data();
                         const chapters = course.chapters;
                         const currentIndex = chapters.findIndex(ch => ch.title === currentChapterId);
                         const currentChapter = chapters[currentIndex];
-
                         document.getElementById('course-title').innerText = course.title;
                         document.getElementById('chapter-title').innerText = currentChapter.title;
                         document.getElementById('chapter-content').innerText = currentChapter.content;
-
                         const nextButton = document.getElementById('next-button');
                         if (currentIndex < chapters.length - 1) {
                             nextButton.style.display = 'block';
