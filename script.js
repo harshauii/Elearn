@@ -14,12 +14,16 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 const storage = firebase.storage();
 
-// Login function
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelector('#login-button').addEventListener('click', login);
+    document.querySelector('#signup-button').addEventListener('click', signup);
+});
+
 function login() {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+    const email = document.querySelector('#email').value;
+    const password = document.querySelector('#password').value;
     auth.signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
+        .then(userCredential => {
             const user = userCredential.user;
             if (user.email === 'harshavardhanjw@gmail.com') {
                 window.location.href = 'admin/index.html';
@@ -27,44 +31,42 @@ function login() {
                 window.location.href = 'student/index.html';
             }
         })
-        .catch((error) => {
+        .catch(error => {
+            console.error('Login error:', error.message);
             alert('Login failed: ' + error.message);
         });
 }
 
-// Signup function (for students)
 function signup() {
-    const email = document.getElementById('signup-email').value;
-    const password = document.getElementById('signup-password').value;
+    const email = document.querySelector('#signup-email').value;
+    const password = document.querySelector('#signup-password').value;
     auth.createUserWithEmailAndPassword(email, password)
-        .then(() => {
+        .then(userCredential => {
             window.location.href = 'student/index.html';
         })
-        .catch((error) => {
+        .catch(error => {
+            console.error('Signup error:', error.message);
             alert('Signup failed: ' + error.message);
         });
 }
 
-// Logout function (used in dashboards)
 function logout() {
     auth.signOut().then(() => {
         window.location.href = '../index.html';
     });
 }
 
-// Load courses for admin/student dashboards
 function loadCourses(elementId, callback) {
-    db.collection('courses').onSnapshot((snapshot) => {
+    db.collection('courses').onSnapshot(snapshot => {
         const courses = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         callback(courses);
     });
 }
 
-// Load enrolled courses for student
 function loadEnrolledCourses(userEmail, callback) {
     db.collection('enrollments')
         .where('userEmail', '==', userEmail)
-        .onSnapshot((snapshot) => {
+        .onSnapshot(snapshot => {
             const enrollments = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             callback(enrollments);
         });
